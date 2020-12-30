@@ -23,9 +23,14 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
+$app->withFacades();
 
-// $app->withEloquent();
+$app->withEloquent();
+
+// add application config
+foreach (['app', 'database', 'queue', 'auth', 'jwt', 'cache', 'logging'] as $config) {
+    $app->configure($config);
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -76,9 +81,9 @@ $app->configure('app');
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+ 'auth' => App\Http\Middleware\Authenticate::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -91,8 +96,11 @@ $app->configure('app');
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
+// jwt
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+
 // $app->register(App\Providers\EventServiceProvider::class);
 
 /*
@@ -107,9 +115,38 @@ $app->configure('app');
 */
 
 $app->router->group([
-    'namespace' => 'App\Http\Controllers',
+    'namespace' => 'App\Http\Controllers\Admin',
+    'prefix' => 'admin',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__.'/../routes/admin.php';
+});
+
+$app->router->group([
+    'namespace' => 'App\Http\Controllers\Member',
+    'prefix' => 'member',
+], function ($router) {
+    require __DIR__.'/../routes/member.php';
+});
+
+$app->router->group([
+    'namespace' => 'App\Http\Controllers\Mini',
+    'prefix' => 'mini',
+], function ($router) {
+    require __DIR__.'/../routes/mini.php';
+});
+
+$app->router->group([
+    'namespace' => 'App\Http\Controllers\Work',
+    'prefix' => 'admin',
+], function ($router) {
+    require __DIR__.'/../routes/work.php';
+});
+
+$app->router->group([
+    'namespace' => 'App\Http\Controllers\Callback',
+    'prefix' => 'callback',
+], function ($router) {
+    require __DIR__.'/../routes/callback.php';
 });
 
 return $app;
