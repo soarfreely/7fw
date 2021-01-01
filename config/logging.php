@@ -1,6 +1,7 @@
 <?php
 
-use App\Libraries\LogFormatter\SqlLogFormatter;
+use App\Handlers\LogFormatter\JsonLogFormatter;
+use App\Handlers\LogFormatter\SqlLogFormatter;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -51,6 +52,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/lumen.log'),
             'level' => 'debug',
+            'tap' => [JsonLogFormatter::class], // 挂载日志格式接口
             'days' => 14,
         ],
 

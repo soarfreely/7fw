@@ -24,20 +24,21 @@ class AppServiceProvider extends ServiceProvider
         DB::listen(function(QueryExecuted $query) {
             $sql=vsprintf(str_replace("?", "'%s'", $query->sql), $query->bindings);
             Log::channel('sqllog')->info($sql.'---'.$query->time);
+            Log::channel(env('LOG_CHANNEL', 'stack'))->info((new \Exception())->getTraceAsString());
         });
 
-        DB::listen(function (QueryExecuted $query) {
-            $sql=$query->sql;
-            $bindings=$query->bindings;
-            $time=$query->time;
+//        DB::listen(function (QueryExecuted $query) {
+//            $sql      = $query->sql;
+//            $bindings = $query->bindings;
+//            $time     = $query->time;
+//
+//            Log::debug(json_encode($query));
+//            Log::debug(var_export(compact('sql','bindings','time'),true));
+//        });
 
-            Log::debug(json_encode($query));
-            Log::debug(var_export(compact('sql','bindings','time'),true));
-        });
-
-        DB::listen(function (QueryExecuted $sql) {
-            Log::info($sql->sql);
-            Log::info((new \Exception())->getTraceAsString());
-        });
+//        DB::listen(function (QueryExecuted $sql) {
+//            Log::info($sql->sql);
+//            Log::info((new \Exception())->getTraceAsString());
+//        });
     }
 }

@@ -8,6 +8,8 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 
+define('REQUEST_ID', (new \Monolog\Processor\UidProcessor(16))->getUid());
+
 /*
 |--------------------------------------------------------------------------
 | Create The Application

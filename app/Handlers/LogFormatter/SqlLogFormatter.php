@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Libraries\LogFormatter;
+namespace App\Handlers\LogFormatter;
 
 
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
 
 class SqlLogFormatter
 {
@@ -23,12 +24,11 @@ class SqlLogFormatter
              */
             public function format(array $record):string
             {
-                // 这个就是最终要记录的数组，最后转成Json并记录进日志
-                $messageArr = explode('---', $record['message']);
+                $message = explode('---', $record['message']);
                 $newRecord = [
-                    'request_id' => $_SERVER['x_request_id'] ?? md5(uniqid() . time()),
-                    'time'       => ($messageArr[1] ?? 0) .' ms',
-                    'sql'        => $messageArr[0],
+                    'request_id' => ($_SERVER['x_request_id'] ?? REQUEST_ID) . '_' . (new UidProcessor(16))->getUid(),
+                    'time'       => ($message[1] ?? 0) .' ms',
+                    'sql'        => $message[0],
                     'context'    => $record['context'],
                 ];
 
@@ -37,7 +37,7 @@ class SqlLogFormatter
         };
 
         foreach ($logger->getHandlers() as $handler) {
-            $handler->setFormatter($sqlJsonFormatter);
+            method_exists($handler, 'setFormatter') && $handler->setFormatter($sqlJsonFormatter);
         }
     }
 }
