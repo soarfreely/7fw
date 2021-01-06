@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
+use App\Models\AdminModel;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 
 class AuthAdminController extends AdminController
 {
     /**
-     * 参考文档
-     * https://learnku.com/articles/17883
      *
      * Create a new AuthController instance.
      *
@@ -29,7 +29,12 @@ class AuthAdminController extends AdminController
     {
         $credentials = request(['email', 'password']);
 
+        Log::info('credentials', $credentials);
+
+        AdminModel::query()->get();
+
         if (!$token = $this->guard->attempt($credentials)) {
+            Log::info('error',  $credentials);
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -41,7 +46,10 @@ class AuthAdminController extends AdminController
      */
     public function me()
     {
-        return response()->json($this->guard->user());
+        $data = $this->guard->user();
+        $data['request_id'] = REQUEST_ID;
+
+        return response()->json($data);
     }
 
     /**
@@ -53,7 +61,10 @@ class AuthAdminController extends AdminController
     {
         $this->guard->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json([
+            'message' => 'Successfully logged out',
+            'request_id' => REQUEST_ID,
+        ]);
     }
 
     /**
@@ -78,7 +89,8 @@ class AuthAdminController extends AdminController
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->guard->factory()->getTTL() * 60
+            'expires_in' => $this->guard->factory()->getTTL() * 60,
+            'request_id' => REQUEST_ID,
         ]);
     }
 
