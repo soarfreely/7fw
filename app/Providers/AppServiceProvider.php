@@ -22,9 +22,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         DB::listen(function(QueryExecuted $query) {
-            $sql=vsprintf(str_replace("?", "'%s'", $query->sql), $query->bindings);
-            Log::channel('sqllog')->info($sql.'---'.$query->time);
-            Log::channel(env('LOG_CHANNEL', 'stack'))->info((new \Exception())->getTraceAsString());
+            $sql = vsprintf(str_replace("?", "'%s'", $query->sql), $query->bindings);
+            Log::channel('sqllog')->info($sql . '---' . $query->time);
+//            Log::channel(env('LOG_CHANNEL', 'stack'))->info((new \Exception())->getTraceAsString());
         });
 
 //        DB::listen(function (QueryExecuted $query) {

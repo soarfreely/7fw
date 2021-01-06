@@ -21,7 +21,7 @@ class JsonLogFormatter
              */
             public function format(array $record):string
             {
-                $record['request_id'] = ($_SERVER['request_id'] ?? REQUEST_ID) . '_' . (new UidProcessor(16))->getUid();
+                $record['request_id'] = ($_SERVER['request_id'] ?? REQUEST_ID) . '-' . (new UidProcessor())->getUid();
                 return $this->toJson($this->normalize($record), true) . ($this->appendNewline ? "\n" : '');
             }
         };

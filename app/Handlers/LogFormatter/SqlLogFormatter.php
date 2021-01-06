@@ -26,7 +26,7 @@ class SqlLogFormatter
             {
                 $message = explode('---', $record['message']);
                 $newRecord = [
-                    'request_id' => ($_SERVER['x_request_id'] ?? REQUEST_ID) . '_' . (new UidProcessor(16))->getUid(),
+                    'request_id' => ($_SERVER['x_request_id'] ?? REQUEST_ID) . '－' . (new UidProcessor())->getUid(),
                     'time'       => ($message[1] ?? 0) .' ms',
                     'sql'        => $message[0],
                     'context'    => $record['context'],
