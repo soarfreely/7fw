@@ -33,6 +33,8 @@ class AuthAdminController extends AdminController
 
         AdminModel::query()->get();
 
+        Log::channel('elasticsearch')->debug('elasticsearch debug', $credentials);
+
         if (!$token = $this->guard->attempt($credentials)) {
             Log::info('error',  $credentials);
             return response()->json(['error' => 'Unauthorized'], 401);

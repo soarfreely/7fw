@@ -1,7 +1,12 @@
 <?php
 
+use App\Handlers\LogFormatter\ElasticsearchLogFormatter;
 use App\Handlers\LogFormatter\JsonLogFormatter;
 use App\Handlers\LogFormatter\SqlLogFormatter;
+use App\Handlers\LogProcessor\ElasticsearchProcessor;
+use Elasticsearch\ClientBuilder;
+use Monolog\Formatter\ElasticsearchFormatter;
+use Monolog\Handler\ElasticsearchHandler;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -97,6 +102,35 @@ return [
             'path' => storage_path('logs/' . date('Y/m/d/\h-H', time()).'sql.txt'),
             'tap' => [SqlLogFormatter::class], // 挂载日志格式接口
             'level' => 'debug',
+        ],
+
+        'elasticsearch' => [
+            'driver' => 'monolog',
+            'handler' => ElasticsearchHandler::class,
+            'formatter' => ElasticsearchFormatter::class,
+            'tap' => [ElasticsearchProcessor::class],
+            'formatter_with' => [
+                'index' => sprintf('lumen7-log-%s', date('Y-m-d')),
+                'type' => '_doc',
+            ],
+            'with' => [
+                'client' => ClientBuilder::create()
+                    ->setHosts([
+                        [
+                            'host'   => env('ELASTICSEARCH_HOST', '127.0.0.1'),
+                            'port'   => env('ELASTICSEARCH_PORT', '9200'),
+                            'scheme' => env('ELASTICSEARCH_SCHEME', 'http'),
+                            'user'   => env('ELASTICSEARCH_USERNAME', null),
+                            'pass'   => env('ELASTICSEARCH_PASSWORD', null),
+                        ]
+                    ])
+                    ->build(),
+//                'options' => [
+//                    'index' => 'storage-log',
+//                    'type' => '_doc',
+//                    'ignore_error' => false,
+//                ],
+            ],
         ],
 
         'null' => [
