@@ -15,7 +15,9 @@ $router->post("/refresh", ['uses' => 'AuthAdminController@refresh']);
 $router->post("/me", ['uses' => 'AuthAdminController@me']);
 
 
-
+$router->get("/demo-export", ['uses' => 'DemoExportController@demo']);
+$router->get("/test-export", ['uses' => 'DemoExportController@test']);
+$router->get("/export", ['uses' => 'ExportController@index', 'as' => 'admin_export']);
 
 $router->get("/synonym", ['uses' => 'SynonymController@index']);
 
