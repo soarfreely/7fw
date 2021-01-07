@@ -8,7 +8,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 
-define('REQUEST_ID', (new \Monolog\Processor\UidProcessor(16))->getUid());
+define('REQUEST_ID', (new \Monolog\Processor\UidProcessor(32))->getUid());
 
 /*
 |--------------------------------------------------------------------------
@@ -29,10 +29,6 @@ $app->withFacades();
 
 $app->withEloquent();
 
-// add application config
-foreach (['app', 'database', 'queue', 'auth', 'jwt', 'cache', 'logging'] as $config) {
-    $app->configure($config);
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -66,7 +62,12 @@ $app->singleton(
 |
 */
 
-$app->configure('app');
+// add application config
+foreach (scandir(__DIR__ . '/../config') as $configItem) {
+    if (!in_array($configItem, ['.', '..'])) {
+        $app->configure(str_replace('.php', '', $configItem));
+    }
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -102,8 +103,17 @@ $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 // jwt
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
+$app->register(App\Providers\EventServiceProvider::class);
 
-// $app->register(App\Providers\EventServiceProvider::class);
+
+// 设置 Excel 别名
+$app->alias('Excel', 'Maatwebsite\Excel\Facades\Excel');
+$app->alias('app', 'Illuminate\Support\Facades\App');
+
+if ($app->environment() !== 'production') {
+    $app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+}
 
 /*
 |--------------------------------------------------------------------------

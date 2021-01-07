@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Exports;
+namespace App\Exports\Concerns;
 
 
 use Closure;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -13,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-abstract class ExportByQuery implements FromQuery, WithHeadings, WithMapping,  WithEvents, WithColumnFormatting
+abstract class AbstractExport implements WithHeadings, WithMapping,  WithEvents, WithColumnFormatting
 {
     use Exportable;
 
@@ -21,6 +20,16 @@ abstract class ExportByQuery implements FromQuery, WithHeadings, WithMapping,  W
      * @var null
      */
     protected  $exportQuery = null;
+
+    /**
+     * @var null
+     */
+    protected  $exportCollection = null;
+
+    /**
+     * @var null
+     */
+    protected  $exportArray = null;
 
     /**
      * 表头
@@ -35,15 +44,6 @@ abstract class ExportByQuery implements FromQuery, WithHeadings, WithMapping,  W
      * @var int
      */
     protected  $index = 1;
-
-    /**
-     * ExportByQuery constructor.
-     * @param $query
-     */
-    public function __construct($query)
-    {
-        $this->exportQuery = $query;
-    }
 
     /**
      * 指定列宽
@@ -122,10 +122,7 @@ abstract class ExportByQuery implements FromQuery, WithHeadings, WithMapping,  W
      * @return int
      * Date: 2020/9/4 Time: 下午3:39
      */
-    public function rowNumber() : int
-    {
-        return $this->query()->count();
-    }
+    abstract public function rowNumber() : int;
 
     /**
      * 列的数量
