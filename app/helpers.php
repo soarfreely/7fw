@@ -73,7 +73,7 @@ if (!function_exists('success')) {
         return response()->json([
             'code'       => 200,
             'message'    => 'success',
-            'request_id' => $_SERVER['x_request_id'] ?? LOG_ID,
+            'request_id' => $_SERVER['x_request_id'] ?? REQUEST_ID,
             'data'       => !empty($data) ? $data : (object)$data
         ], $httpCode);
     }
@@ -87,7 +87,7 @@ if (!function_exists('error')) {
         if (!empty($args)) {
             $message = vsprintf($message, $args);
         }
-
+        // TODO
         throw new \App\Exceptions\Error($code, $message, $data, $httpCode);
     }
 }
