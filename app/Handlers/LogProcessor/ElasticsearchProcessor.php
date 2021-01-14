@@ -18,7 +18,7 @@ class ElasticsearchProcessor
     {
         foreach ($logger->getHandlers() as $handler) {
             $handler->pushProcessor(function ($record) {
-                $record['request_id_1'] = ($_SERVER['request_id'] ?? REQUEST_ID) . '-' . (new UidProcessor())->getUid();
+                $record['request_id'] = ($_SERVER['request_id'] ?? REQUEST_ID) . '-' . (new UidProcessor())->getUid();
                 return $record;
             });
         }
