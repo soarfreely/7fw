@@ -1,6 +1,5 @@
 <?php
 
-use App\Handlers\LogFormatter\ElasticsearchLogFormatter;
 use App\Handlers\LogFormatter\JsonLogFormatter;
 use App\Handlers\LogFormatter\SqlLogFormatter;
 use App\Handlers\LogProcessor\ElasticsearchProcessor;
@@ -103,6 +102,15 @@ return [
             'tap' => [SqlLogFormatter::class], // 挂载日志格式接口
             'level' => 'debug',
         ],
+
+        // https://learnku.com/articles/3567/monolog-optimization-and-elk-friendly-log-format
+//        'logstash' => [
+//            'driver' => 'monolog',
+//            'handler' => AggregateLogHandler::class,
+//            'formatter' => LogstashFormatter::class,
+//            'path' => storage_path('logs') . '/logstash-gavin.log',
+//            'level' => 'debug',
+//        ],
 
         'elasticsearch' => [
             'driver' => 'monolog',
