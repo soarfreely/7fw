@@ -1,8 +1,7 @@
 /vendor
 /.idea
-*/.git
-Homestead.json
-Homestead.yaml
-.env
-.phpunit.result.cache
-storage/attachment
+src/Homestead.json
+src/Homestead.yaml
+src/.env
+src/.phpunit.result.cache
+src/storage/attachment
