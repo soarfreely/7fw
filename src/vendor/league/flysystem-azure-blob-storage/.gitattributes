@@ -1,8 +1,0 @@
-* text=auto
-
-tests/
-.gitignore
-.gitattributes
-.travis.yml
-phpunit.xml
-
