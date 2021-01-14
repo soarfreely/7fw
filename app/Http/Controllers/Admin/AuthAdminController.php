@@ -35,6 +35,8 @@ class AuthAdminController extends AdminController
 
         Log::channel('elasticsearch')->debug('elasticsearch debug', $credentials);
 
+        Log::error('标准输出-stderr', $credentials);
+
         if (!$token = $this->guard->attempt($credentials)) {
             Log::info('error',  $credentials);
             return response()->json(['error' => 'Unauthorized'], 401);
